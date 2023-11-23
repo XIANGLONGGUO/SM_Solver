@@ -11,6 +11,8 @@ numpy.linalg.svd(a, full_matrices=True)： 计算奇异值分解。
 '''
 def get_dist(node_list,idx1,idx2):
     return la.norm(np.array(node_list[idx1])-np.array(node_list[idx2]))
+#def get_angle(node_list,idx1,idx2):
+
 def get_angle_x(node_list,idx1,idx2):
     vector = np.array(node_list[idx1])-np.array(node_list[idx2])
     
@@ -44,5 +46,7 @@ def get_angle_z(node_list,idx1,idx2):
     
     # 将弧度转换为度
     return angle_rad
-def calculate(node_list,connect_node,dist_list,soild_limitation,limitation,Dict_disp):
-    
+def calculate(node_list,connect_node):
+    #此版本不要point，只有connect，node,因为point本身就是node和connect的组合
+    for i in range(len(connect_node)):
+        

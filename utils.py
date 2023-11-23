@@ -46,8 +46,8 @@ def add_connect_utils(node_list,connect_list):
     I=0
     print('结束输入：end')
     while True:
-
-        x = input("请输入节点的index index E I：")
+        print('没有此力请输入0')
+        x = input("请输入节点的index index E I 前端点是否约束(0否，1简支，2固定) 后端点是否约束(0否，1简支，2固定) 左端点Fx Fy Fz Mx My Mz 右端点Fx Fy Fz Mx My Mz qx qy qz：")
         if x=="end":
             break
         if int(x.split(' ')[0])>len(node_list) or int(x.split(' ')[1])>len(node_list):
@@ -69,7 +69,7 @@ def add_point_utils(node_list,connect_list,dist_list):
     I=0
     print('结束输入：end')
     while True:
-        x = input("请输入节点的连接序号 起始点距离占比：")
+        x = input("请输入节点的连接序号 起始点距离占比 是否固定(0否，1简支，2固定) 端点Fx Fy Fz Mx My Mz：")
         if x=="end":
             print('node_list')
             for i in range(len(node_list)):

@@ -6,8 +6,7 @@ from calculate import *
 from limitation import *#不需要的，直接在连接时候约束了
 
 if __name__=="__main__":
-    print('Welcome to SM_Solver(钢架)')
-    print('本程序只适用于钢架')
+    print('Welcome to SM_Solver')
     print('author:GUOxianglong')
     node_list=[]
     connect_node=[]

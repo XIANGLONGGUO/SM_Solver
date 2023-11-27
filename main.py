@@ -12,12 +12,17 @@ if __name__=="__main__":
     connect_node=[]
     dist_list=[]
     soild_limitation=[]
-    limitatation=[]
+    l=[]
     Dict_disp={}
     Lam = {}
     Ke = {}
     Me = {}
+    mode=0
     while True:
+        print(node_list)
+        node_list=convert(node_list)
+        connect_node=convert1(connect_node)
+        #dist_list=convert(dist_list)
         print('输入calculate来计算')
         print('输入add_node来添加节点')
         print('输入add_connect来添加连接')
@@ -27,6 +32,8 @@ if __name__=="__main__":
         print('输入remove_point来删除节点间的节点')
         print('输入plot来绘图')
         print('输入mat来输入材料参数')
+        print('输入force来添加载荷')
+        print('输入c来计算')
         print('exit退出')
         #######################################################################
         #Edit the shape of structure
@@ -34,9 +41,6 @@ if __name__=="__main__":
         imput=input("输入操作：")
         if imput=="exit":
             exit(0)
-        if imput=="calculate" or imput=="c":
-            print("开始计算")
-            break
         elif imput=="add_node" or imput=="an":
             print("开始添加节点")
             node_list=add_node_utils(node_list)
@@ -48,7 +52,7 @@ if __name__=="__main__":
             node_list=remove_node_utils(node_list)
         elif imput=="add_connect" or imput=="ac":
             print("开始添加连接")
-            print('相同节点添加一次力即可')
+            #print('相同节点添加一次力即可')
             connect_node=add_connect_utils(node_list,connect_node)
         elif imput=="add_point" or imput=="ap":
             print("开始添加节点间的节点")
@@ -90,10 +94,10 @@ if __name__=="__main__":
         elif imput=='force' or imput=='f':
             R=add_force(R,node_list,connect_node,mode)
         elif imput=='calculate' or imput=='c':
-            
-
+            l=get_l(l)
+            l=convert(l)
             E,D,A,Iz,Iy,Ix,G = (Metal[0],Metal[1],Metal[2],Metal[3],Metal[4],Metal[5],Metal[6])
-            for i in len(connect_node):
+            for i in range(len(connect_node)):
                 node = connect_node[i]
                 op = node_list[node[0]]
                 ed = node_list[node[1]]
@@ -101,7 +105,8 @@ if __name__=="__main__":
                 lenth = np.linalg.norm(ele_array)
             
                 if mode == 0:
-                    Lam[i] = cal_lam(ele_array)
+                    print('衔架')
+                    Lam[i] = cal_lam(ele_array,mode)
                     k = np.zeros((6,6))
                     k[0,0],k[3,3] = (1,1)
                     k[3,0],k[0,3] = (-1,-1)
@@ -110,9 +115,10 @@ if __name__=="__main__":
                     Ke[i] = np.mat((E*10**9*A/lenth)*k)
                     Me[i] = D*A*lenth*m/6
                 elif mode == 1:
+                    print('钢架')
                     print(op,ed)
                     enode = np.array(list(map(float,input('请输入任意主平面xy内点的坐标，格式为0,0,0\n').split(','))))-np.array(op)
-                    Lam[i] = cal_lam(ele_array,enode)
+                    Lam[i] = cal_lam(ele_array,mode,enode)
                     k = np.matrix(np.zeros((12,12),dtype=float))
                     a1,a2,a3,a4,a5,a6,a7,a8 = (E*A/lenth,12*E*Iz/lenth**3,6*E*Iz/lenth**2,12*E*Iy/lenth**3,-6*E*Iy/lenth**2,G*Ix/lenth,4*E*Iy/lenth,4*E*Iz/lenth)
                     k[0,0],k[1,1],k[5,1],k[2,2],k[4,2],k[3,3],k[4,4],k[5,5] = (a1,a2,a3,a4,a5,a6,a7,a8)
@@ -128,14 +134,14 @@ if __name__=="__main__":
                     m[6,0],m[7,1],m[11,1],m[8,2],m[10,2],m[9,3],m[8,4],m[10,4],m[7,5],m[11,5] = (70,54,-13*lenth,54,13*lenth,70*Ix/A,-13*lenth,-3*lenth**2,13*lenth,-3*lenth**2)
                     m += m.T - np.diag(m.diagonal())
                     Me[i] = np.matrix(D*A*lenth*m/420,dtype=float)
-            u_and_fw_out = u_and_fw(mode,node_list,connect_node,dist_list,R,Lam,Ke,Me)
+            u_and_fw_out = u_and_fw(mode,node_list,R,connect_node,Lam,Ke,Me)
             Uw = u_and_fw_out[0]#位移列向量
             Fw = u_and_fw_out[1]#载荷列向量
-            K_an_M_out = cal_k_or_m(mode,node_list,connect_node,Lam,Ke,Me,Uw,Fw)
+            K_an_M_out = cal_k_or_m(mode,node_list,connect_node,Lam,Ke,Me)
             Kw = K_an_M_out[0]
             Mw = K_an_M_out[1]
             
-            Uw = cal(Fw,Kw,mode,node_list)
+            Uw = cal(Fw,Kw,mode,node_list,l)
             print(Uw)
             s=50000000
             draw_strain(node_list,connect_node,Uw,mode,s)

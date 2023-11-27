@@ -2,11 +2,26 @@ from node import *
 import numpy
 import matplotlib.pyplot as plt
 from node import *
+def convert(list1):
+    for i in range(len(list1)):
+        list2=list1[i]
+        for j in range(len(list2)):
+            k = list1[i][j]
+            list1[i][j]=float(k)
+    return  list1
+def convert1(list1):
+    for i in range(len(list1)):
+        list2=list1[i]
+        for j in range(len(list2)):
+            k = list1[i][j]
+            list1[i][j]=int(k)
+    return  list1
 def add_node_utils(node_list):
     I=0
     print('结束输入：end')
     while True:
         x = input("请输入节点的x y z坐标,或者退出：")
+        #print(node_list)
         if x=="end":
             break
         if len(x.split(" "))!=3:
@@ -46,8 +61,8 @@ def add_connect_utils(node_list,connect_list):
     I=0
     print('结束输入：end')
     while True:
-        print('没有此力请输入0')
-        x = input("请输入节点的index index")
+        #print('没有此力请输入0')
+        x = input("请输入节点的index index:")
         if x=="end":
             break
         if int(x.split(' ')[0])>len(node_list) or int(x.split(' ')[1])>len(node_list):
@@ -198,7 +213,7 @@ def add_force(R,node_list,connect_list,mode):
     force_input = list(map(float,force_input))
     while True:
         if force_input == [0]:
-            print('输入完毕，外载荷如下')
+            print('以下是在载荷')
             for i in range(0,len(R)):
                 F = R[i]
                 print('结点'+str(F[0]),'类型'+str(F[1]),'x方向分量'+str(F[2]),'y方向分量'+str(F[3]),'z方向分量'+str(F[4]))
@@ -217,6 +232,7 @@ def add_force(R,node_list,connect_list,mode):
                 print('输入成功，请输入下一载荷')
                 force_input = input('请输入\n作用结点号，类型(力为0，力矩为1)，x方向分量，y方向分量，z方向分量\n输入完毕请输入0结束此步骤\n').split(',')
                 force_input = list(map(float,force_input))
+    return R
 #单元矩阵计算
 def cal_lam(ary,mode,ex_node = 0):
     ele_x = ary/np.linalg.norm(ary)
@@ -246,7 +262,7 @@ def cal_k_or_m(m,Node,Rod,Lam,Ke,Me):
     kw = np.matrix(np.zeros((3*(m+1)*len(Node),3*(m+1)*len(Node)),dtype=float))
     mw = np.matrix(np.zeros((3*(m+1)*len(Node),3*(m+1)*len(Node)),dtype=float))
     t0 = np.matrix(np.zeros((3,3),dtype=float))
-    for i in len(Rod):
+    for i in range(len(Rod)):
         start_num = Rod[i][0]
         end_num = Rod[i][1]
         if m==0:
@@ -274,10 +290,9 @@ def u_and_fw(m,Node,R,Rod,Lam,Ke,Me):
         for j in range(0,3):
             fw[(int(3*force_inf[0]+3*force_inf[1]+j),0)] += force_inf[j+2]
     return [u,fw]
-def cal(Fw,Kw,mode,Node):
-    #求解静力位移
-    #输入位移约束
-    Us = [[0,0,0],[0,1,0],[1,0,0],[1,1,0]]#输入约束，元素为列表，每个代表一项约束，其中第一项为结点号，第二项为位移分量编号，第三项为位移值
+def cal(Fw,Kw,mode,Node,Us):
+    #处理约束
+    #Us = [[0,0,0],[0,1,0],[1,0,0],[1,1,0]]#输入约束，元素为列表，每个代表一项约束，其中第一项为结点号，第二项为位移分量编号，第三项为位移值
     #处理刚度矩阵与载荷列向量
     for i in range(0,len(Us)):
         us = Us[i]
@@ -287,10 +302,10 @@ def cal(Fw,Kw,mode,Node):
         Kw[int(3*(mode+1)*us[0]+us[1]),int(3*(mode+1)*us[0]+us[1])] = 1
 
     Z = []
-    for i in len(Node):
+    for i in range(len(Node)):
         Z.append(float(Node[i][-1]))
     if Z==[0.0]*len(Node):
-        for i in Node.keys():
+        for i in range(len(Node)):
             Fw[int(3*(mode+1)*i+2),0] = 0
             Kw[int(3*(mode+1)*i+2),:] = 0
             Kw[:,int(3*(mode+1)*i+2)] = 0
@@ -312,7 +327,7 @@ def draw_strain(dic, rod, U,mode, scale_factor=1000):
     ax = fig.add_subplot(projection="3d")
 
     # Original structure
-    for i in len(rod):
+    for i in range(len(rod)):
         rod_node = rod[i]
         node_coord1 = dic[rod_node[0]]
         node_coord2 = dic[rod_node[1]]
@@ -321,7 +336,7 @@ def draw_strain(dic, rod, U,mode, scale_factor=1000):
         ax.plot(x, y, z, color='black')
 
     # Deformed structure with scaling
-    for i in len(rod):
+    for i in range(len(rod)):
         rod_node = rod[i]
         node_coord1 = dic[rod_node[0]]
         node_coord2 = dic[rod_node[1]]
@@ -339,3 +354,12 @@ def draw_strain(dic, rod, U,mode, scale_factor=1000):
         ax.plot(x, y, z, color='black')
 
     plt.show()
+def get_l(l):
+    print('输入约束，元素为列表，每个代表一项约束，其中第一项为结点号，第二项为位移分量编号，第三项为位移值')
+    while True:
+        x = input('请输入约束，输入0结束此步骤\n').split(',')
+        x = list(map(float,x))
+        if x == [0]:
+            break
+        else:
+            l.append(x)

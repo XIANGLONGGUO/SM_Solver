@@ -34,6 +34,7 @@ if __name__=="__main__":
         print('输入mat来输入材料参数')
         print('输入force来添加载荷')
         print('输入c来计算')
+        print('输入hz来计算频率')
         print('exit退出')
         #######################################################################
         #Edit the shape of structure
@@ -95,7 +96,7 @@ if __name__=="__main__":
             R=add_force(R,node_list,connect_node,mode)
         elif imput=='calculate' or imput=='c':
             l=get_l(l)
-            l=convert(l)
+            Us=convert(l)
             E,D,A,Iz,Iy,Ix,G = (Metal[0],Metal[1],Metal[2],Metal[3],Metal[4],Metal[5],Metal[6])
             for i in range(len(connect_node)):
                 node = connect_node[i]
@@ -141,9 +142,57 @@ if __name__=="__main__":
             Kw = K_an_M_out[0]
             Mw = K_an_M_out[1]
             
-            Uw = cal(Fw,Kw,mode,node_list,l)
+            Uw = cal(Fw,Kw,mode,node_list,Us)
             print(Uw)
             s=50000000
             draw_strain(node_list,connect_node,Uw,mode,s)
+        
+        elif imput=='hz':
+            Uss=[None]*len(node_list)
+            for i in range(len(node_list)):
+                Uss[i]=[0,0,0]
+            for j in Us:
+                i=int(j[0])
+                if j[1]==0:
+                    Uss[i][0]=1
+                elif j[1]==1:
+                    Uss[i][1]=1
+                elif j[1]==2:
+                    Uss[i][2]=1
+            #import numpy as np
+            import scipy.linalg as sl
+            def delete(K, M, NP=len(node_list), NRR=Uss, NF=3):
+                DK = K.copy()
+                DM = M.copy()
+                count = []
+
+                for i in range(NP):
+                    for j in range(NF):
+                        if NRR[i][j] == 1:
+                            count.append((j - 1) * NF + i)
+
+                # 将 count 转换为 NumPy 数组以便于索引
+                count = np.array(count)
+
+                # 删除行和列
+                DK = np.delete(DK, count, axis=0)
+                DK = np.delete(DK, count, axis=1)
+
+                DM = np.delete(DM, count, axis=0)
+                DM = np.delete(DM, count, axis=1)
+
+                return DK, DM
+
+            # 示例用法:
+            # 假设在调用函数之前已经定义了 Node、Uss 和 NP 的值
+            # K 和 M 是你的二维 NumPy 数组
+            # DK, DM = delete(K, M, len(Node), Uss, NP)
+            DK,DM=delete(Kw, Mw)
+            e,v = sl.eig(DK,DM)
+            print(e)
+            print(v)
+            
+            
+            
         else:
             print("输入错误")

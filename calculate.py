@@ -46,16 +46,3 @@ def get_angle_z(node_list,idx1,idx2):
     
     # 将弧度转换为度
     return angle_rad
-def calculate(node_list,connect_node):
-    #此版本不要point，只有connect，node,因为point本身就是node和connect的组合
-    mul_node=[]#多次连接的点
-    di=[]#每个点的连接次数
-    for i in range(node_list):
-        di[i]=0
-    for i in range(len(connect_node)):
-        di[connect_node[i][0]]+=1
-        di[connect_node[i][1]]+=1
-    for i in range(len(node_list)):
-        if di[i]>=2:
-            mul_node.append(i)
-    

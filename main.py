@@ -3,7 +3,6 @@ import numpy as np
 from utils import *
 #from node import *
 from calculate import *
-from limitation import *#不需要的，直接在连接时候约束了
 
 if __name__=="__main__":
     print('Welcome to SM_Solver')

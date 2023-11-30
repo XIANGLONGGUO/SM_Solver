@@ -41,7 +41,7 @@ if __name__=="__main__":
 
         imput=input("输入操作：")
         if imput=="exit":
-            exit(0)
+            break
         elif imput=="add_node" or imput=="an":
             print("开始添加节点")
             node_list=add_node_utils(node_list)

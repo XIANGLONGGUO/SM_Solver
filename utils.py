@@ -351,8 +351,9 @@ def get_l(l):
     print('输入约束，元素为列表，每个代表一项约束，其中第一项为结点号，第二项为位移分量编号，第三项为位移值')
     while True:
         x = input('请输入约束，输入0结束此步骤\n').split(',')
-        x = list(map(float,x))
-        if x == [0]:
+        print(x)
+        if x == ['0']:
             break
         else:
             l.append(x)
+    return l

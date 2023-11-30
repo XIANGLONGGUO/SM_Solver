@@ -211,7 +211,7 @@ if __name__=="__main__":
                 for i in range(NP):
                     for j in range(NF):
                         if NRR[i][j] == 1:
-                            count.append((i - 1) * NF + j)
+                            count.append((i) * NF + j)
 
                 # 将 count 转换为 NumPy 数组以便于索引
                 count = np.array(count)

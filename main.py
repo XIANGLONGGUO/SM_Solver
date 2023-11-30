@@ -34,6 +34,7 @@ if __name__=="__main__":
         print('输入force来添加载荷')
         print('输入c来计算')
         print('输入hz来计算频率')
+        print('输入l来输入节点约束')
         print('exit退出')
         #######################################################################
         #Edit the shape of structure

@@ -237,16 +237,9 @@ def add_force(R,node_list,connect_list,mode):
 def cal_lam(ary,mode,ex_node = 0):
     ele_x = ary/np.linalg.norm(ary)
     if mode == 0:
-        if ele_x[0]==0 and ele_x[1]==0:
-            ele_y = np.array([1,0,0])
-            ele_z = np.array([0,1,0])
-        else:
-            ele_y = np.array([-ele_x[1],ele_x[0],0])
-            cross = np.cross(ele_x, ele_y)
-            ele_z = cross/np.linalg.norm(cross)
-
-        cos_xx,cos_xy,cos_xz,cos_yx,cos_yy,cos_yz,cos_zx,cos_zy,cos_zz = (ele_x[0],ele_x[1],ele_x[2],ele_y[0],ele_y[1],ele_y[2],ele_z[0],ele_z[1],ele_z[2])
-        lam = np.matrix([[cos_xx,cos_yx,cos_zx],[cos_xy,cos_yy,cos_zy],[cos_xz,cos_yz,cos_zz]])
+        #---------------------------------------------------------------------------------------------------------------------
+        lam = np.matrix([[ele_x[0],ele_x[1],ele_x[2],0,0,0],[0,0,0,ele_x[0],ele_x[1],ele_x[2]]],dtype=float)
+        #---------------------------------------------------------------------------------------------------------------------
         return lam
     elif mode == 1:
         lx,mx,nx = (ele_x[0],ele_x[1],ele_x[2])
@@ -266,7 +259,7 @@ def cal_k_or_m(m,Node,Rod,Lam,Ke,Me):
         start_num = Rod[i][0]
         end_num = Rod[i][1]
         if m==0:
-            te = np.vstack((np.hstack((Lam[i],t0)),np.hstack((t0,Lam[i]))))
+            te = Lam[i].T
         elif m==1:
             te = np.vstack((np.hstack((Lam[i],t0,t0,t0)),np.hstack((t0,Lam[i],t0,t0)),np.hstack((t0,t0,Lam[i],t0)),np.hstack((t0,t0,t0,Lam[i]))))
         ke = np.dot(np.dot(te,Ke[i]),te.T)

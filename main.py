@@ -107,11 +107,8 @@ if __name__=="__main__":
                 if mode == 0:
                     print('衔架')
                     Lam[i] = cal_lam(ele_array,mode)
-                    k = np.zeros((6,6))
-                    k[0,0],k[3,3] = (1,1)
-                    k[3,0],k[0,3] = (-1,-1)
-                    m = np.matrix(2*np.eye(6,dtype=float))
-                    m[3:6,0:3],m[0:3,3:6] = (np.matrix(np.eye(3,dtype=float)),np.matrix(np.eye(3,dtype=float)))#一致质量矩阵
+                    k = np.matrix([[1,-1],[-1,1]],dtype=float)
+                    m = np.matrix([[2,1],[1,2]],dtype=float)#一致质量矩阵
                     Ke[i] = np.mat((E*10**9*A/lenth)*k)
                     Me[i] = D*A*lenth*m/6
                 elif mode == 1:

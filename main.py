@@ -8,12 +8,19 @@ if __name__=="__main__":
     print('Welcome to SM_Solver')
     print('author:GUOxianglong')
     node_list=[[0.0, 0.0, 0.0],[0.01, 0.0, 0.0],[0.005, 0.00866025404, 0.0]]####
+    #node_list=[[0.0, 0.0, 0.0],[0.0, 0.33333, 0.0],[0.0,0.666666,0.0],[0.0,1.0,0.0]]
     connect_node=[[0,1],[1,2],[0,2]]####
     dist_list=[]
     l=[]
 
     Us=[[0,0,0],[0,1,0],[0,2,0],[1,1,0],[1,2,0],[2,2,0]]
     Metal=[70.0, 2750.0, 7.854e-07, 0.0, 0.0, 0.0, 0.0]
+    '''connect_node=[[0,1],[1,2],[2,3]]####
+    dist_list=[]
+    l=[]
+
+    Us=[[0,0,0],[0,1,0],[0,2,0],[3,0,0],[3,1,0],[3,2,0],[1,0,0],[1,2,0],[2,0,0],[2,2,0]]
+    Metal=[1, 1e9, 1  , 0.0, 0.0, 0.0, 0.0]'''
     Dict_disp={}
     Lam = {}
     Ke = {}
@@ -162,17 +169,18 @@ if __name__=="__main__":
                 if mode == 0:
                     print('衔架')
                     Lam[i] = cal_lam(ele_array,mode)
-                    k = np.matrix([[1,-1],[-1,1]],dtype=float)
-                    m = np.matrix([[2,1],[1,2]],dtype=float)#一致0
+                    k = np.matrix([[1,-1],[-1,1]],dtype='float64')
+                    m = np.matrix([[2,1],[1,2]],dtype='float64')#一致0
                     #质量矩阵
                     Ke[i] = np.mat((E*10**9*A/lenth)*k)
                     Me[i] = D*A*lenth*m/6
+
                 elif mode == 1:
                     print('钢架')
                     print(op,ed)
                     enode = np.array(list(map(float,input('请输入任意主平面xy内点的坐标，格式为0,0,0\n').split(','))))-np.array(op)
                     Lam[i] = cal_lam(ele_array,mode,enode)
-                    k = np.matrix(np.zeros((12,12),dtype=float))
+                    k = np.matrix(np.zeros((12,12),dtype='float64'))
                     a1,a2,a3,a4,a5,a6,a7,a8 = (E*A/lenth,12*E*Iz/lenth**3,6*E*Iz/lenth**2,12*E*Iy/lenth**3,-6*E*Iy/lenth**2,G*Ix/lenth,4*E*Iy/lenth,4*E*Iz/lenth)
                     k[0,0],k[1,1],k[5,1],k[2,2],k[4,2],k[3,3],k[4,4],k[5,5] = (a1,a2,a3,a4,a5,a6,a7,a8)
                     k[6:12,6:12] = k[0:6,0:6]
@@ -180,13 +188,13 @@ if __name__=="__main__":
                     k[6,0],k[7,1],k[11,1],k[8,2],k[10,2],k[9,3],k[8,4],k[10,4],k[7,5],k[11,5] = (-a1,-a2,a3,-a4,a5,-a6,-a5,-a5/3,-a3,a8/2)
                     k += k.T - np.diag(k.diagonal())
                     Ke[i] = np.matrix(k,dtype=float)
-                    m = np.matrix(np.zeros((12,12),dtype=float))
+                    m = np.matrix(np.zeros((12,12),dtype='float64'))
                     m[0,0],m[1,1],m[5,1],m[2,2],m[4,2],m[3,3],m[4,4],m[5,5] = (140,156,22*lenth,156,-22*lenth,140*Ix/A,4*lenth**2,4*lenth**2)
                     m[6:12,6:12] = m[0:6,0:6]
                     m[11,7],m[10,8] = (-22*lenth,22*lenth)
                     m[6,0],m[7,1],m[11,1],m[8,2],m[10,2],m[9,3],m[8,4],m[10,4],m[7,5],m[11,5] = (70,54,-13*lenth,54,13*lenth,70*Ix/A,-13*lenth,-3*lenth**2,13*lenth,-3*lenth**2)
                     m += m.T - np.diag(m.diagonal())
-                    Me[i] = np.matrix(D*A*lenth*m/420,dtype=float)
+                    Me[i] = np.matrix(D*A*lenth*m/420,dtype='float64')
             u_and_fw_out = u_and_fw(mode,node_list,R,connect_node,Lam,Ke,Me)
             Uw = u_and_fw_out[0]#位移列向量
             Fw = u_and_fw_out[1]#载荷列向量
@@ -236,11 +244,15 @@ if __name__=="__main__":
 
             DK,DM=delete(Kw, Mw)
             e,v = sl.eig(DK,DM)
-            e=np.sqrt(e)/(2*np.pi)
+
+            #e=np.sqrt(e)
+
             print(e)
             print(v)
-            
-            
-            
+            #57924 105610 139080
+            print(DK@v[:,2])
+            print(e[2]*DM@v[:,2])
+            e=np.sqrt(e)
+            print(e)
         else:
             print("输入错误")

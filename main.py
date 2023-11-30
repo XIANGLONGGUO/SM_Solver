@@ -7,16 +7,19 @@ from calculate import *
 if __name__=="__main__":
     print('Welcome to SM_Solver')
     print('author:GUOxianglong')
-    node_list=[[0,0,0],[0,1,0],[1,1,0],[1,0,0]]####
-    connect_node=[[0,1],[1,2],[2,3],[3,0],[0,2],[1,3]]####
+    node_list=[[0.0, 0.0, 0.0],[0.01, 0.0, 0.0],[0.005, 0.00866025404, 0.0]]####
+    connect_node=[[0,1],[1,2],[0,2]]####
     dist_list=[]
-    soild_limitation=[]
     l=[]
+
+    Us=[[0,0,0],[0,1,0],[0,2,0],[1,1,0],[1,2,0],[2,2,0]]
+    Metal=[70.0, 2750.0, 7.854e-07, 0.0, 0.0, 0.0, 0.0]
     Dict_disp={}
     Lam = {}
     Ke = {}
     Me = {}
     mode=0
+    R = []
     while True:
         print(node_list)
         node_list=convert(node_list)
@@ -160,7 +163,8 @@ if __name__=="__main__":
                     print('衔架')
                     Lam[i] = cal_lam(ele_array,mode)
                     k = np.matrix([[1,-1],[-1,1]],dtype=float)
-                    m = np.matrix([[2,1],[1,2]],dtype=float)#一致质量矩阵
+                    m = np.matrix([[2,1],[1,2]],dtype=float)#一致0
+                    #质量矩阵
                     Ke[i] = np.mat((E*10**9*A/lenth)*k)
                     Me[i] = D*A*lenth*m/6
                 elif mode == 1:
@@ -211,7 +215,7 @@ if __name__=="__main__":
                 for i in range(NP):
                     for j in range(NF):
                         if NRR[i][j] == 1:
-                            count.append((i) * NF + j)
+                            count.append(i * NF + j)
 
                 # 将 count 转换为 NumPy 数组以便于索引
                 count = np.array(count)
@@ -229,8 +233,10 @@ if __name__=="__main__":
             # 假设在调用函数之前已经定义了 Node、Uss 和 NP 的值
             # K 和 M 是你的二维 NumPy 数组
             # DK, DM = delete(K, M, len(Node), Uss, NP)
+
             DK,DM=delete(Kw, Mw)
             e,v = sl.eig(DK,DM)
+            e=np.sqrt(e)/(2*np.pi)
             print(e)
             print(v)
             

@@ -28,7 +28,6 @@ if __name__=="__main__":
     mode=0
     R = []
     while True:
-        print(node_list)
         node_list=convert(node_list)
         connect_node=convert1(connect_node)
         #dist_list=convert(dist_list)
@@ -222,6 +221,7 @@ if __name__=="__main__":
 
                 for i in range(NP):
                     for j in range(NF):
+                        print(i,j)
                         if NRR[i][j] == 1:
                             count.append(i * NF + j)
 
@@ -243,15 +243,24 @@ if __name__=="__main__":
             # DK, DM = delete(K, M, len(Node), Uss, NP)
 
             DK,DM=delete(Kw, Mw)
+            print('-------------------------Kw-------------------------')
+            print(Kw)
+            print('-------------------------Mw-------------------------')
+            print(Mw)
             e,v = sl.eig(DK,DM)
 
             #e=np.sqrt(e)
-
+            print('-------------------------e-------------------------')
             print(e)
+            print('-------------------------v-------------------------')
             print(v)
             #57924 105610 139080
+            
+            print('-------------------------Uw-------------------------')
             print(DK@v[:,2])
+
             print(e[2]*DM@v[:,2])
+            print('-------------------------omega-------------------------')
             e=np.sqrt(e)
             print(e)
         else:

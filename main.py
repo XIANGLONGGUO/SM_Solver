@@ -257,11 +257,26 @@ if __name__=="__main__":
             #57924 105610 139080
             #print(la.norm(DK-DM*e[0]))
             
-            print('-------------------------Uw-------------------------')
-            print(DK@v[:,0])
-            print(e[0]*DM@v[:,0])
+
             print('-------------------------omega-------------------------')
             e=np.sqrt(e)
             print(e)
+            print('-------------------------Uw-------------------------')
+            m=0
+            for i in range(len(v)):
+                Uw=[None]*3*len(node_list)
+                n=0
+                for i in range(len(node_list)):
+                        for j in range(3):
+                            #print(i,j)
+                            if Uss[i][j] == 1:
+                                Uw[i * 3 + j]=0
+                for i in range(len(Uw)):
+                    if Uw[i] == None:
+                        Uw[i]=v[m][n]
+                        n+=1
+                m+=1
+                s=0.001
+                draw_strain(node_list,connect_node,Uw,mode,s)
         else:
             print("输入错误")

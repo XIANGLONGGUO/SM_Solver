@@ -152,7 +152,7 @@ if __name__=="__main__":
             
             Uw = cal(Fw,Kw,mode,node_list,Us)
             print(Uw)
-            s=input('请输入放大倍数：')
+            s=int(input('请输入放大倍数：'))
             #s=50000000
             draw_strain(node_list,connect_node,Uw,mode,s)
         
@@ -277,7 +277,7 @@ if __name__=="__main__":
                         Uw[i]=v[m][n]
                         n+=1
                 m+=1
-                s=input('请输入放大倍数：')
+                s=int(input('请输入放大倍数：'))
                 #s=0.001
                 draw_strain(node_list,connect_node,Uw,mode,s)
         else:

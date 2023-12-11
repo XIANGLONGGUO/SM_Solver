@@ -7,7 +7,7 @@ from calculate import *
 if __name__=="__main__":
     print('Welcome to SM_Solver')
     print('author:GUOxianglong')
-    node_list=[[0.0, 0.0, 0.0],[0.01, 0.0, 0.0],[0.005, 0.00866025404, 0.0]]####
+    node_list=[[0.0, 0.0, 0.0],[0.01, 0.0, 0.0],[0.005, 0.00866025404, 0.010]]####
     #node_list=[[0.0, 0.0, 0.0],[0.0, 0.33333, 0.0],[0.0,0.666666,0.0],[0.0,1.0,0.0]]
     connect_node=[[0,1],[1,2],[0,2]]####
     dist_list=[]
